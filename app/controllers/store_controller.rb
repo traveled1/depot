@@ -1,4 +1,6 @@
 class StoreController < ApplicationController
+  skip_before_filter :authorize
+
   def index
     @products = Product.order(:title).limit(10)
     @cart = current_cart

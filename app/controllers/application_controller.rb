@@ -9,6 +9,16 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
+  before_filter :init_app, :authorize
+
+  protected
+    def authorize
+      unless User.find_by_id(session[:user_id])
+        session[:dest_url] = request.url
+        redirect_to login_url, notice: "Please log in"
+      end
+    end
+
   private
 
     def current_cart 
@@ -18,4 +28,11 @@ class ApplicationController < ActionController::Base
       session[:cart_id] = cart.id
       cart
     end
+
+    def init_app
+      unless request.xhr?
+        @cart = current_cart
+      end
+    end
+
 end
